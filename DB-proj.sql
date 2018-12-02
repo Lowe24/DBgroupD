@@ -993,3 +993,24 @@ end $$
 DELIMITER;
 
 call DeleteStudent(69);
+
+DELIMITER $$
+CREATE PROCEDURE StudentsPerSection()
+	BEGIN
+		DECLARE count INT DEFAULT 40;
+		REPEAT
+		SELECT first_name, last_name, subject
+		FROM stud_sec_junc AS ssj
+		RIGHT JOIN students AS st ON student_id = st.id
+		RIGHT JOIN sections AS sc ON section_id = sc.id
+		RIGHT JOIN final_grades AS fg ON ssj.id = fg.student_sec_junc_id
+        WHERE sc.id = count
+		ORDER BY sc.subject ASC, fg.grade DESC
+        LIMIT 3;
+        UNTIL count = 45
+        END REPEAT;
+    END$$
+DELIMITER ;
+
+CALL StudentsPerSection();
+DROP PROCEDURE StudentsPerSection;
